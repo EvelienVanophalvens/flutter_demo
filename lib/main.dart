@@ -33,6 +33,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> _items = ["test1", "test2", "test3"];
 
+    void _navigateToAddItemPage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddItemPage()),
+    );
+
+    if (result != null) {
+      setState(() {
+        _items.add(result);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,9 +68,63 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _navigateToAddItemPage();
         },
         tooltip: 'Add Item',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class AddItemPage extends StatefulWidget {
+  @override
+  _AddItemPageState createState() => _AddItemPageState();
+}
+
+class _AddItemPageState extends State<AddItemPage> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add To do'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  labelText: 'Item',
+                  labelStyle: TextStyle(
+                    fontSize: 18,
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20), // Add some space between the fields
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, _controller.text);
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground color
+                ),
+                child: const Text(
+                  'Add',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
